@@ -19,38 +19,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 const {devicedetailsRouter}=require("./Routes/devicedetailsRouter");
 const {loginRouter}=require("./Routes/loginRoutes");
 const {userdeviceRouter}=require("./Routes/userdeviceRouter");
+const {auth}=require("./Controller/auth");
 
-//Middleware to protect the route /view 
-const auth = function(req,res,next){
-  //getting token from cookies
-  const token = req.cookies.authToken;
-  if(!token){
-    console.log("Token not present please login!");
-    res.redirect("/login");
-    return;
-  }
-  try {
-    const verified = jwt.verify(token, process.env.SECRET);
-    req.user = verified;
-    User.findOne({username : req.user.username},(err,result)=>{
-      if(err){
-        console.log(err);
-      }else{
-        if(!result){
-          console.log("Username not found");
-          res.redirect("/login");
-        }else{
-          next();
-        }
-      }
-    });
-  } catch (error) {
-    console.log("Invalid token "+error);
-    res.redirect("/login");
-  }
-}
-
-app.get("/",(req,res)=>{
+app.get("/dashboard",auth,(req,res)=>{
     res.render("dashboard");
 });
 

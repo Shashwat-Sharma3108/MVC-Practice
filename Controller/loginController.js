@@ -22,11 +22,11 @@ const login=(req,res)=>
                 bcrypt.compare(password, foundUser.password,(err,result)=>{
                     if(err){
                         console.log("Error in checking passoword");
-                        res.redirect("/login");
+                        res.redirect("/");
                     }else{
                         const token = jwt.sign({username : foundUser.username},process.env.SECRET);
                         res.cookie("authToken",token);
-                        res.redirect("/view");
+                        res.redirect("/dashboard");
                     }
                 });
             }
